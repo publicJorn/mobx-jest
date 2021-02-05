@@ -1,8 +1,19 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { makeAutoObservable, configure } from 'mobx'
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+let instance
+
+beforeEach(() => {
+  configure({ safeDescriptiors: false })
+
+  instance = makeAutoObservable({
+    id: 'abc',
+    imCalled: (arg) => console.log(arg),
+    doStuff: () => this.imCalled('yes'),
+  })
+})
+
+test('update object', () => {
+  const spy = jest.spyOn(instance, 'imCalled')
+  instance.doStuff()
+  expect(spy).toHaveBeenCalledWith('yes')
+})
